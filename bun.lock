@@ -8,9 +8,10 @@
         "mrmime": "^2.0.1",
         "totalist": "^3.0.1",
         "tsdown": "latest",
+        "varlock": "^0.5.0",
       },
       "peerDependencies": {
-        "electron": ">=32.0.0 <40.0.0",
+        "electron": ">=32.0.0 <41.0.0",
       },
     },
   },
@@ -272,6 +273,8 @@
     "undici-types": ["undici-types@6.21.0", "", {}, "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="],
 
     "universalify": ["universalify@0.1.2", "", {}, "sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg=="],
+
+    "varlock": ["varlock@0.5.0", "", { "bin": { "varlock": "bin/cli.js" } }, "sha512-jfFNdzK+pznQWyp6eHv7X3iImEmNG7KaGZL2sQJxTlifxRtIwgNknLKmds8zPUhUMdcCybhJy52lewgscu8pkg=="],
 
     "wrappy": ["wrappy@1.0.2", "", {}, "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ=="],
 

@@ -1,6 +1,6 @@
 {
   "name": "@cyca/electron-sirv",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "description": "Static file serving for Electron apps",
   "type": "module",
   "files": [
@@ -25,12 +25,14 @@
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
-    "test": "bun test"
+    "test": "bun test",
+    "publish:alpha": "varlock run -- npm publish --access public --tag alpha"
   },
   "devDependencies": {
     "mrmime": "^2.0.1",
     "totalist": "^3.0.1",
-    "tsdown": "latest"
+    "tsdown": "latest",
+    "varlock": "^0.5.0"
   },
   "peerDependencies": {
     "electron": ">=32.0.0 <41.0.0"
