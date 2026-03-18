@@ -153,7 +153,7 @@ export interface ServeOptions {
   maxAge?: number;
   immutable?: boolean;
   single?: string | boolean;
-  ignores?: Arrayable<string | RegExp>;
+  ignores?: Arrayable<string | RegExp> | false;
   extensions?: string[];
   dotfiles?: boolean;
   brotli?: boolean;
@@ -189,11 +189,11 @@ export function serve(dir: string, opts: ServeOptions = {}): RequestHandler {
   }
 
   let ignores: RegExp[] = [];
-  if (opts.ignores) {
+  if (opts.ignores !== false) {
     ignores.push(/[/]([A-Za-z\s\d~$._-]+\.\w+){1,}$/); // any extn
     if (opts.dotfiles) ignores.push(/\/\.\w/);
     else ignores.push(/\/\.well-known/);
-    fromArray(opts.ignores).forEach((x) => {
+    fromArray(opts.ignores || []).forEach((x) => {
       ignores.push(new RegExp(x, "i"));
     });
   }
@@ -243,6 +243,11 @@ export function serve(dir: string, opts: ServeOptions = {}): RequestHandler {
       lookup(pathname, extns) ||
       (isSPA && !isMatch(pathname, ignores) && lookup(fallback, extns));
     if (!data) return isNotFound(req);
+
+    data = {
+      ...data,
+      headers: { ...data.headers },
+    };
 
     if (isEtag && req.headers.get("if-none-match") === data.headers["ETag"]) {
       return new Response(null, {

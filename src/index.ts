@@ -37,7 +37,7 @@ export function serve(options: Options | URL): LoadURL {
       const queryString = searchParameters
         ? "?" + new URLSearchParams(searchParameters).toString()
         : "";
-      await browserWindow.loadURL(urlString);
+      await browserWindow.loadURL(`${urlString}${queryString}`);
     };
   }
 
@@ -76,15 +76,23 @@ export function serve(options: Options | URL): LoadURL {
       ? electron.session.fromPartition(options.partition)
       : electron.session.defaultSession;
 
-    session.protocol.handle(options.scheme!, sirv(options.directory, options));
+    session.protocol.handle(
+      options.scheme!,
+      sirv(options.directory, {
+        ...options,
+        single: options.single ?? `${options.file}.html`,
+      })
+    );
   });
 
   return async (browserWindow, searchParameters) => {
     const queryString = searchParameters
       ? "?" + new URLSearchParams(searchParameters).toString()
-      : "";
+        : "";
+    const pathname =
+      options.file && options.file !== "index" ? `/${options.file}.html` : "";
     await browserWindow.loadURL(
-      `${options.scheme}://${options.hostname}${queryString}`
+      `${options.scheme}://${options.hostname}${pathname}${queryString}`
     );
   };
 }
