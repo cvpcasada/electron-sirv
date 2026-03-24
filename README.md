@@ -22,6 +22,11 @@ That means SPA fallback behavior follows `sirv` semantics:
 The `file` option is still supported at the Electron API layer, so you can load
 an entry file other than `index.html`.
 
+When you pass a `pathSegment` to `loadURL()`, it is appended literally to the
+configured entry URL. The browser request URL may therefore look like
+`/docs.html/settings`, while `sirv` can still resolve that request back to the
+configured HTML entry file through SPA fallback.
+
 ## Usage
 
 ```js
@@ -39,11 +44,11 @@ let mainWindow;
 
 	await loadURL(mainWindow);
 
-	// Or optionally with search parameters.
-	await loadURL(mainWindow, {id: '4', foo: 'bar'});
+	// Or optionally with a path segment and query string.
+	await loadURL(mainWindow, '/settings?tab=profile');
 
 	// The above is equivalent to this:
-	await mainWindow.loadURL('app://-');
+	await mainWindow.loadURL('app://-/settings?tab=profile');
 	// The `-` is just the required hostname
 })();
 ```
@@ -61,7 +66,7 @@ await loadPopup(mainWindow);
 
 ### `serve(options)`
 
-Creates a `loadURL(window, searchParameters?)` function for a BrowserWindow.
+Creates a `loadURL(window, pathSegment?)` function for a BrowserWindow.
 
 Important options:
 
@@ -74,4 +79,13 @@ Notes:
 - `file: 'popup'` makes `loadURL(window)` load `app://-/popup.html`
 - `single: true` falls back to the configured entry for unresolved extensionless routes
 - `single: 'admin.html'` uses `admin.html` as the SPA fallback target
-- `searchParameters` can be a `URLSearchParams` or a record of string values
+- `pathSegment` can include both the pathname suffix and query string
+
+Request URL examples:
+
+| `file` option | `loadURL()` call | Browser request URL | Resolved HTML file |
+| --- | --- | --- | --- |
+| `index` | `loadURL(window)` | `app://-/` | `index.html` |
+| `index` | `loadURL(window, '/settings')` | `app://-/settings` | `index.html` via SPA fallback |
+| `docs` | `loadURL(window)` | `app://-/docs.html` | `docs.html` |
+| `docs` | `loadURL(window, '/settings')` | `app://-/docs.html/settings` | `docs.html` via SPA fallback |

@@ -21,11 +21,11 @@ let mainWindow;
 
 	await loadURL(mainWindow);
 
-	// Or optionally with search parameters.
-	await loadURL(mainWindow, {id: 4, foo: 'bar'});
+	// Or optionally with a path segment and query string.
+	await loadURL(mainWindow, '/settings?tab=profile');
 
 	// The above is equivalent to this:
-	await mainWindow.loadURL('app://-');
+	await mainWindow.loadURL('app://-/settings?tab=profile');
 	// The `-` is just the required hostname.
 })();
 ```
@@ -33,11 +33,8 @@ let mainWindow;
 export function serve(options: Options | URL): LoadURL {
   if (options instanceof URL) {
     let urlString = options.toString();
-    return async (browserWindow, searchParameters) => {
-      const queryString = searchParameters
-        ? "?" + new URLSearchParams(searchParameters).toString()
-        : "";
-      await browserWindow.loadURL(`${urlString}${queryString}`);
+    return async (browserWindow, pathSegment) => {
+      await browserWindow.loadURL(`${urlString}${pathSegment ?? ""}`);
     };
   }
 
@@ -85,14 +82,11 @@ export function serve(options: Options | URL): LoadURL {
     );
   });
 
-  return async (browserWindow, searchParameters) => {
-    const queryString = searchParameters
-      ? "?" + new URLSearchParams(searchParameters).toString()
-        : "";
+  return async (browserWindow, pathSegment) => {
     const pathname =
       options.file && options.file !== "index" ? `/${options.file}.html` : "";
     await browserWindow.loadURL(
-      `${options.scheme}://${options.hostname}${pathname}${queryString}`
+      `${options.scheme}://${options.hostname}${pathname}${pathSegment ?? ""}`
     );
   };
 }
@@ -141,9 +135,9 @@ export type Options = {
 } & ServeOptions;
 
 /**
-Load the index file in the window.
+Load the index file in the window, optionally with a path segment.
 */
 export type LoadURL = (
   window: BrowserWindow,
-  searchParameters?: Record<string, string> | URLSearchParams
+  pathSegment?: string
 ) => Promise<void>;

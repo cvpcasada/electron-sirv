@@ -65,16 +65,16 @@ beforeEach(() => {
 });
 
 describe("index serve()", () => {
-  test("appends search params when given a URL", async () => {
+  test("appends a path segment when given a URL", async () => {
     const window = {
       loadURL: mock(async (_url: string) => {}),
     };
 
     const loadURL = serve(new URL("https://example.com/app"));
-    await loadURL(window as never, { id: "4", foo: "bar" });
+    await loadURL(window as never, "/settings?tab=profile");
 
     expect(window.loadURL).toHaveBeenCalledWith(
-      "https://example.com/app?id=4&foo=bar"
+      "https://example.com/app/settings?tab=profile"
     );
   });
 
@@ -92,8 +92,8 @@ describe("index serve()", () => {
     expect(handleCalls).toHaveLength(1);
     expect(handleCalls[0]?.scheme).toBe("app");
 
-    await loadURL(window as never, new URLSearchParams({ foo: "bar" }));
-    expect(window.loadURL).toHaveBeenCalledWith("app://-?foo=bar");
+    await loadURL(window as never, "/?foo=bar");
+    expect(window.loadURL).toHaveBeenCalledWith("app://-/?foo=bar");
   });
 
   test("uses a partition-specific session when requested", () => {
@@ -114,10 +114,10 @@ describe("index serve()", () => {
       loadURL: mock(async (_url: string) => {}),
     };
 
-    await loadURL(window as never, { view: "detail" });
+    await loadURL(window as never, "/detail?view=detail");
 
     expect(window.loadURL).toHaveBeenCalledWith(
-      "app://-/owl.html?view=detail"
+      "app://-/owl.html/detail?view=detail"
     );
   });
 });
