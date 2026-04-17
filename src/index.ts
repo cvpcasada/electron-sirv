@@ -32,9 +32,15 @@ let mainWindow;
 */
 export function serve(options: Options | URL): LoadURL {
   if (options instanceof URL) {
-    let urlString = options.toString();
+    const base = new URL(options);
+
     return async (browserWindow, pathSegment) => {
-      await browserWindow.loadURL(`${urlString}${pathSegment ?? ""}`);
+      if (!pathSegment) {
+        await browserWindow.loadURL(base.toString());
+        return;
+      }
+
+      await browserWindow.loadURL(new URL(pathSegment, base).toString());
     };
   }
 
@@ -52,7 +58,7 @@ export function serve(options: Options | URL): LoadURL {
 
   options.directory = path.resolve(
     electron.app.getAppPath(),
-    options.directory
+    options.directory,
   );
 
   electron.protocol.registerSchemesAsPrivileged([
@@ -78,7 +84,7 @@ export function serve(options: Options | URL): LoadURL {
       sirv(options.directory, {
         ...options,
         single: options.single ?? `${options.file}.html`,
-      })
+      }),
     );
   });
 
@@ -86,7 +92,7 @@ export function serve(options: Options | URL): LoadURL {
     const pathname =
       options.file && options.file !== "index" ? `/${options.file}.html` : "";
     await browserWindow.loadURL(
-      `${options.scheme}://${options.hostname}${pathname}${pathSegment ?? ""}`
+      `${options.scheme}://${options.hostname}${pathname}${pathSegment ?? ""}`,
     );
   };
 }
@@ -139,5 +145,5 @@ Load the index file in the window, optionally with a path segment.
 */
 export type LoadURL = (
   window: BrowserWindow,
-  pathSegment?: string
+  pathSegment?: string,
 ) => Promise<void>;

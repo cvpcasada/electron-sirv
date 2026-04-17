@@ -5,7 +5,11 @@ type ReadyListener = () => void;
 const readyListeners: ReadyListener[] = [];
 const registerSchemesCalls: unknown[] = [];
 const handleCalls: Array<{ scheme: string; handler: unknown }> = [];
-const partitionHandleCalls: Array<{ partition: string; scheme: string; handler: unknown }> = [];
+const partitionHandleCalls: Array<{
+  partition: string;
+  scheme: string;
+  handler: unknown;
+}> = [];
 let appPath = import.meta.dir;
 
 const defaultSession = {
@@ -74,7 +78,7 @@ describe("index serve()", () => {
     await loadURL(window as never, "/settings?tab=profile");
 
     expect(window.loadURL).toHaveBeenCalledWith(
-      "https://example.com/app/settings?tab=profile"
+      "https://example.com/settings?tab=profile",
     );
   });
 
@@ -117,7 +121,7 @@ describe("index serve()", () => {
     await loadURL(window as never, "/detail?view=detail");
 
     expect(window.loadURL).toHaveBeenCalledWith(
-      "app://-/owl.html/detail?view=detail"
+      "app://-/owl.html/detail?view=detail",
     );
   });
 });

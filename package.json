@@ -1,6 +1,6 @@
 {
   "name": "@cyca/electron-sirv",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Static file serving for Electron apps",
   "type": "module",
   "files": [
@@ -35,7 +35,7 @@
     "varlock": "^0.5.0"
   },
   "peerDependencies": {
-    "electron": ">=32.0.0 <41.0.0"
+    "electron": ">=32"
   },
   "engines": {
     "node": ">=20.0.0"
